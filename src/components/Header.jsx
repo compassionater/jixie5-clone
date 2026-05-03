@@ -1,11 +1,19 @@
 import { useState, useRef, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { FiUser, FiLogIn } from 'react-icons/fi'
 import SearchBox from './SearchBox'
 import { categories } from '../mock/data'
 
+const menuItems = [
+  { key: 'drawings', label: '图纸库', path: '/category/cad' },
+  { key: 'software', label: '软件/教程', path: '/category/soft' },
+  { key: 'more', label: '更多', path: '/category/keshe' }
+]
+
 export default function Header() {
   const [activeMenu, setActiveMenu] = useState(null)
   const timeoutRef = useRef(null)
+  const navigate = useNavigate()
 
   const handleMouseEnter = (menu) => {
     clearTimeout(timeoutRef.current)
@@ -22,17 +30,11 @@ export default function Header() {
     return () => clearTimeout(timeoutRef.current)
   }, [])
 
-  const menuItems = [
-    { key: 'drawings', label: '图纸库' },
-    { key: 'software', label: '软件/教程' },
-    { key: 'more', label: '更多' }
-  ]
-
   return (
     <header className="bg-white border-b border-border-color sticky top-0 z-50 shadow-sm">
       <div className="w-container mx-auto flex items-center h-[60px]">
         {/* Logo */}
-        <a href="/" className="flex items-center mr-8 shrink-0">
+        <Link to="/" className="flex items-center mr-8 shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">机</span>
@@ -42,7 +44,7 @@ export default function Header() {
               <div className="text-text-light text-xs">专注机械行业设计</div>
             </div>
           </div>
-        </a>
+        </Link>
 
         {/* Navigation */}
         <nav className="flex items-center h-full mr-auto">
@@ -54,6 +56,7 @@ export default function Header() {
               onMouseLeave={handleMouseLeave}
             >
               <button
+                onClick={() => navigate(item.path)}
                 className={`
                   h-full px-5 text-sm font-medium flex items-center gap-1
                   transition-colors relative
@@ -87,25 +90,25 @@ export default function Header() {
                     <div className="flex gap-8">
                       {categories[item.key].groups.map((group, i) => (
                         <div key={i} className="min-w-[140px]">
-                          <a href={group.link} className="block text-primary font-bold text-sm mb-2 hover:underline">
+                          <Link to={group.link === '/cad/' ? '/category/cad' : group.link === '/3D/' ? '/category/3D' : group.link === '/keshe/' ? '/category/keshe' : group.link} className="block text-primary font-bold text-sm mb-2 hover:underline">
                             {group.title}
-                          </a>
+                          </Link>
                           <ul className="space-y-1">
                             {group.items.slice(0, 12).map((subItem, j) => (
                               <li key={j}>
-                                <a
-                                  href={subItem.link}
+                                <Link
+                                  to={`/search?keyword=${subItem.name}`}
                                   className="block text-text-sub text-xs hover:text-primary hover:underline py-0.5"
                                 >
                                   {subItem.name}
-                                </a>
+                                </Link>
                               </li>
                             ))}
                             {group.items.length > 12 && (
                               <li>
-                                <a href={group.link} className="block text-primary text-xs hover:underline py-0.5">
+                                <Link to="/category/cad" className="block text-primary text-xs hover:underline py-0.5">
                                   查看全部 &gt;
-                                </a>
+                                </Link>
                               </li>
                             )}
                           </ul>
@@ -116,12 +119,12 @@ export default function Header() {
                     <ul className="flex flex-wrap gap-x-6 gap-y-1">
                       {categories[item.key]?.items?.map((subItem, j) => (
                         <li key={j}>
-                          <a
-                            href={subItem.link}
+                          <Link
+                            to={`/search?keyword=${subItem.name}`}
                             className="block text-text-sub text-sm hover:text-primary hover:underline py-1"
                           >
                             {subItem.name}
-                          </a>
+                          </Link>
                         </li>
                       ))}
                     </ul>
@@ -134,7 +137,7 @@ export default function Header() {
 
         {/* Search */}
         <div className="mr-6">
-          <SearchBox />
+          <SearchBox onSearch={(kw) => navigate(`/search?keyword=${kw}`)} />
         </div>
 
         {/* User Actions */}

@@ -1,22 +1,23 @@
+import { Link } from 'react-router-dom'
 import { FiCalendar, FiUser, FiHardDrive, FiDownload, FiEye } from 'react-icons/fi'
 
 export default function ResourceCard({ item, variant = 'grid' }) {
   const isGrid = variant === 'grid'
 
   return (
-    <a
-      href={`/resource/${item.id}`}
+    <Link
+      to={`/resource/${item.id}`}
       className={`
         block bg-white rounded-lg overflow-hidden
         border border-transparent
-        hover:border-primary hover:shadow-lg
+        hover:border-primary/30 hover:shadow-lg hover:-translate-y-0.5
         transition-all duration-200 group
         ${isGrid ? 'flex' : ''}
       `}
     >
       {/* Image */}
       <div className={`
-        overflow-hidden bg-gray-bg
+        overflow-hidden bg-gray-bg relative
         ${isGrid ? 'w-[200px] h-[150px] shrink-0' : 'w-full h-[180px]'}
       `}>
         <img
@@ -25,6 +26,8 @@ export default function ResourceCard({ item, variant = 'grid' }) {
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
+        {/* Overlay on hover */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
       </div>
 
       {/* Info */}
@@ -37,15 +40,15 @@ export default function ResourceCard({ item, variant = 'grid' }) {
 
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-light">
           <span className="flex items-center gap-1">
-            <FiCalendar size={12} />
+            <FiCalendar size={11} />
             {item.date}
           </span>
           <span className="flex items-center gap-1">
-            <FiUser size={12} />
+            <FiUser size={11} />
             {item.author}
           </span>
           <span className="flex items-center gap-1">
-            <FiHardDrive size={12} />
+            <FiHardDrive size={11} />
             {item.size}
           </span>
         </div>
@@ -67,6 +70,6 @@ export default function ResourceCard({ item, variant = 'grid' }) {
           </div>
         )}
       </div>
-    </a>
+    </Link>
   )
 }
